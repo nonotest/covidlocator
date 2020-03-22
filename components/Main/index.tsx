@@ -1,14 +1,8 @@
 import React, { useState } from 'react'
-import {
-  Button,
-  StatusBar,
-  View,
-  StyleSheet,
-  Text,
-  Dimensions
-} from 'react-native'
-import { TabView, TabBar, SceneMap } from 'react-native-tab-view'
+import { StatusBar, View, StyleSheet, Text, Dimensions } from 'react-native'
+import { TabView, SceneMap } from 'react-native-tab-view'
 
+import SubmissionForm from '../SubmissionForm'
 import Map from '../Map'
 
 const initialLayout = { width: Dimensions.get('window').width }
@@ -20,7 +14,7 @@ const MapScene = () => (
     }}
   >
     <Map />
-    <Button style={{ width: 50, alignSelf: 'center' }} title="Test" />
+    <SubmissionForm />
   </View>
 )
 const ListScene = () => (
@@ -39,8 +33,8 @@ const ListScene = () => (
 function Main() {
   const [index, setIndex] = useState(0)
   const [routes] = useState([
-    { key: 'map', title: 'Map' },
-    { key: 'list', title: 'List' }
+    { key: 'map', title: 'Map' }
+    // { key: 'list', title: 'List' }
   ])
 
   const renderScene = SceneMap({

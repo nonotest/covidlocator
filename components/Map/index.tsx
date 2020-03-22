@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useEffect } from 'react'
+import { Text, View } from 'react-native'
 import MapView from 'react-native-web-maps'
-
+import { useDispatch, storeActions, useStore } from '../../context/StoreContext'
 import * as Location from 'expo-location'
 import * as Permissions from 'expo-permissions'
+
 import { clusters } from '../../mock/clusters'
 
 function Map() {
-  // TODO: useLocationData
-  const [location, setLocation] = useState<Location.LocationData>(null)
-  const markerRef = useRef(null)
+  const store = useStore()
+  const dispatch = useDispatch()
+
   const _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION)
     if (status !== 'granted') {
@@ -25,12 +26,19 @@ function Map() {
         },
         timestamp: new Date().getTime()
       }
-      setLocation(loc)
+
+      dispatch({
+        type: storeActions.LOCATION_RECEIVED,
+        payload: { location: loc }
+      })
       return
     }
 
     let location = await Location.getCurrentPositionAsync({})
-    setLocation(location)
+    dispatch({
+      type: storeActions.LOCATION_RECEIVED,
+      payload: { location }
+    })
     return
   }
 
@@ -39,13 +47,23 @@ function Map() {
     _getLocationAsync()
   }, [])
 
-  if (!location) {
-    return null
+  if (!store.location) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <Text>Loading...</Text>
+      </View>
+    )
   }
 
   return (
     <View style={{ flex: 1, width: '100%' }}>
-      <MapView defaultZoom={13} region={location ? { ...location.coords } : {}}>
+      <MapView defaultZoom={13} region={store.location.coords}>
         {clusters.data.map(cluster => {
           let options = {}
           if (cluster.symptoms_severity === 'critical') {
