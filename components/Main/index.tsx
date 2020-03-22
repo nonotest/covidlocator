@@ -1,40 +1,69 @@
 import React, { useState } from 'react'
-import { Text, Dimensions } from 'react-native'
-import Map from '../Map'
+import {
+  Button,
+  StatusBar,
+  View,
+  StyleSheet,
+  Text,
+  Dimensions
+} from 'react-native'
 import { TabView, TabBar, SceneMap } from 'react-native-tab-view'
+
+import Map from '../Map'
 
 const initialLayout = { width: Dimensions.get('window').width }
 
-const LazyPlaceholder = ({ route }) => (
-  <View style={styles.scene}>
-    <Text>Loading {route.title}…</Text>
+const MapScene = () => (
+  <View
+    style={{
+      flex: 1
+    }}
+  >
+    <Map />
+    <Button style={{ width: 50, alignSelf: 'center' }} title="Test" />
+  </View>
+)
+const ListScene = () => (
+  <View
+    style={{
+      flex: 1,
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }}
+  >
+    <Text>TTT</Text>
   </View>
 )
 
 function Main() {
   const [index, setIndex] = useState(0)
-  const [routes, setRoutes] = useState([
+  const [routes] = useState([
     { key: 'map', title: 'Map' },
     { key: 'list', title: 'List' }
   ])
 
+  const renderScene = SceneMap({
+    map: MapScene,
+    listl: null, // hack
+    list: ListScene
+  })
+
   return (
     <TabView
-      lazy
-      renderLazyPlaceholder={({ route }) => <LazyPlaceholder route={route} />}
-      navigationState={{
-        index,
-        routes
-      }}
-      renderScene={SceneMap({
-        map: () => <Map />,
-        list: () => <Text>TTT</Text>
-      })}
-      onIndexChange={index => setIndex(index)}
-      initialLayout={{ width: Dimensions.get('window').width }}
-      style={styles.container}
+      navigationState={{ index, routes }}
+      renderScene={renderScene}
+      onIndexChange={setIndex}
+      initialLayout={initialLayout}
+      style={{ marginTop: StatusBar.currentHeight, flex: 1 }}
     />
   )
 }
+
+const styles = StyleSheet.create({
+  scene: {
+    flex: 1
+  }
+})
 
 export default Main

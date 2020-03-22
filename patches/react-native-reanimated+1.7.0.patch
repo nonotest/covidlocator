@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-reanimated/src/core/AnimatedNode.js b/node_modules/react-native-reanimated/src/core/AnimatedNode.js
+index b91eb00..e19f579 100644
+--- a/node_modules/react-native-reanimated/src/core/AnimatedNode.js
++++ b/node_modules/react-native-reanimated/src/core/AnimatedNode.js
+@@ -135,7 +135,7 @@ export default class AnimatedNode {
+   __markUpdated() {
+     UPDATED_NODES.push(this);
+     if (!propUpdatesEnqueued) {
+-      propUpdatesEnqueued = setImmediate(runPropUpdates);
++      propUpdatesEnqueued = setTimeout(runPropUpdates,0);
+     }
+   }
+ 

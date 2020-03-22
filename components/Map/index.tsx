@@ -43,10 +43,8 @@ function Map() {
     return null
   }
 
-  console.log({ location })
-
   return (
-    <View style={{ width: '100%', flex: 1 }}>
+    <View style={{ flex: 1, width: '100%' }}>
       <MapView defaultZoom={13} region={location ? { ...location.coords } : {}}>
         {clusters.data.map(cluster => {
           let options = {}
@@ -81,10 +79,7 @@ function Map() {
               radius={Math.sqrt(cluster.population) * 100}
               options={options}
               center={cluster.center.coordinate}
-              // onPress={() => {
-              //   markerRef.current.showCallout && markerRef.current.showCallout()
-              // }}
-              // ref={markerRef}
+              key={cluster.uuid}
             />
           )
         })}
