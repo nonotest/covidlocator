@@ -1,1 +1,3 @@
-fu
+function CommentsStep() {}
+
+export default CommentsStep
