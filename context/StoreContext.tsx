@@ -59,7 +59,7 @@ export const storeActions = {
   LOCATION_RECEIVED: 'LOCATION_RECEIVED'
 }
 
-function storeReducer(state: StoreProviderState, action) {
+function storeReducer(state: StoreProviderState, action): StoreProviderState {
   switch (action.type) {
     case storeActions.LOCATION_RECEIVED:
       return {

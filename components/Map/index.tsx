@@ -1,15 +1,20 @@
+//@ts-nocheck
+
 import React, { useEffect } from 'react'
-import { Text, View } from 'react-native'
+import { View } from 'react-native'
 import MapView from 'react-native-web-maps'
 import { useDispatch, storeActions, useStore } from '../../context/StoreContext'
 import * as Location from 'expo-location'
 import * as Permissions from 'expo-permissions'
+import { Text, Button } from 'react-native-paper'
+import { useNavigation } from '@react-navigation/native'
 
 import { clusters } from '../../mock/clusters'
 
 function Map() {
   const store = useStore()
   const dispatch = useDispatch()
+  const navigation = useNavigation()
 
   const _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION)
@@ -102,6 +107,24 @@ function Map() {
           )
         })}
       </MapView>
+      <View
+        style={{
+          width: 200,
+          position: 'absolute',
+          bottom: 50,
+          alignSelf: 'center',
+          alignItems: 'center',
+          zIndex: 1
+        }}
+      >
+        <Button
+          accessibilityLabel="Make a submission"
+          onPress={() => navigation.navigate('SubmissionModal')}
+          mode="contained"
+        >
+          <Text>Make a submission</Text>
+        </Button>
+      </View>
     </View>
   )
 }
