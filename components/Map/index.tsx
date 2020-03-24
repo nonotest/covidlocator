@@ -8,11 +8,9 @@ import * as Location from 'expo-location'
 import * as Permissions from 'expo-permissions'
 import { Text, Button } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
-
 import { clusters } from '../../mock/clusters'
-import { markers } from '../../mock/markers'
 
-function renderClusters() {
+function renderClusters(clusters) {
   return clusters.data.map(cluster => {
     let options = {}
     if (cluster.symptoms_severity === 'critical') {
@@ -52,9 +50,8 @@ function renderClusters() {
   })
 }
 
-function renderFriends() {
+function renderFriends(markers) {
   return markers.data.map(marker => {
-    console.log({ marker })
     return (
       <MapView.Marker
         title={marker.name}
@@ -65,11 +62,16 @@ function renderFriends() {
   })
 }
 
+function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}
+
 function Map() {
   const store = useStore()
   const dispatch = useDispatch()
   const navigation = useNavigation()
   const [friends, setFriends] = useState(false)
+  const [authenticating, setAuthenticating] = useState(false)
 
   const _getLocationAsync = async () => {
     let { status } = await Permissions.askAsync(Permissions.LOCATION)
@@ -100,6 +102,16 @@ function Map() {
       payload: { location }
     })
     return
+  }
+
+  const _authenticate = async val => {
+    setAuthenticating(true)
+    await timeout(1000)
+    dispatch({
+      type: storeActions.SET_AUTHENTICATION,
+      payload: { authed: val }
+    })
+    setAuthenticating(false)
   }
 
   useEffect(() => {
@@ -133,8 +145,8 @@ function Map() {
           fullscreenControl: false
         }}
       >
-        {renderClusters()}
-        {friends === true && renderFriends()}
+        {renderClusters(clusters)}
+        {friends === true && renderFriends(store.markers)}
       </MapView>
       <View
         style={{
@@ -154,27 +166,30 @@ function Map() {
           <Text>Make a submission</Text>
         </Button>
       </View>
-      <View
-        style={{
-          position: 'absolute',
-          top: 10,
-          alignSelf: 'center',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexDirection: 'row',
-          width: 200
-        }}
-      >
-        <Button
-          accessibilityLabel="Show/Hide Friends"
-          onPress={() => {
-            setFriends(!friends)
+      {store.authed && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 10,
+            alignSelf: 'center',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'row',
+            width: 200
           }}
-          mode="contained"
         >
-          <Text>Show/Hide Friends</Text>
-        </Button>
-      </View>
+          <Button
+            accessibilityLabel="Show/Hide Friends"
+            onPress={() => {
+              setFriends(!friends)
+            }}
+            mode="contained"
+          >
+            <Text>{friends ? 'Hide' : 'Show'} Friends</Text>
+          </Button>
+        </View>
+      )}
+
       <View
         style={{
           position: 'absolute',
@@ -186,13 +201,25 @@ function Map() {
           flexDirection: 'row'
         }}
       >
-        <Button
-          accessibilityLabel="Make a submission"
-          onPress={() => {}}
-          mode="contained"
-        >
-          <Text>Authenticate</Text>
-        </Button>
+        {!store.authed ? (
+          <Button
+            accessibilityLabel="Make a submission"
+            onPress={async () => _authenticate(true)}
+            mode="contained"
+            loading={authenticating}
+          >
+            <Text>Authenticate</Text>
+          </Button>
+        ) : (
+          <Button
+            accessibilityLabel="Make a submission"
+            onPress={async () => _authenticate(false)}
+            mode="contained"
+            loading={authenticating}
+          >
+            <Text>Logout</Text>
+          </Button>
+        )}
       </View>
     </View>
   )

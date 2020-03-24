@@ -1,16 +1,24 @@
 import React, { Dispatch, createContext, useContext, useEffect } from 'react'
 import * as Location from 'expo-location'
+import { clusters } from '../mock/clusters'
+import { markers } from '../mock/markers'
 
 export interface StoreProviderProps {
   children?: React.ReactNode
 }
 export interface StoreProviderState {
   location: Location.LocationData
+  markers: { data: Array<Object> }
+  clusters: { data: Array<Object> }
+  authed: boolean
 }
 
 function getInitialStore(): StoreProviderState {
   return {
-    location: null
+    location: null,
+    markers,
+    clusters,
+    authed: false
   }
 }
 
@@ -56,7 +64,8 @@ interface Actions {
 }
 
 export const storeActions = {
-  LOCATION_RECEIVED: 'LOCATION_RECEIVED'
+  LOCATION_RECEIVED: 'LOCATION_RECEIVED',
+  SET_AUTHENTICATION: 'SET_AUTHENTICATION'
 }
 
 function storeReducer(state: StoreProviderState, action): StoreProviderState {
@@ -65,6 +74,11 @@ function storeReducer(state: StoreProviderState, action): StoreProviderState {
       return {
         ...state,
         location: action.payload.location
+      }
+    case storeActions.SET_AUTHENTICATION:
+      return {
+        ...state,
+        authed: action.payload.authed
       }
     default:
       return state

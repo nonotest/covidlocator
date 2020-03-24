@@ -1,7 +1,7 @@
 // Paper throws ts errors so mute them lol
 
 import React from 'react'
-import { Modal } from 'react-native-paper'
+import { Modal, useTheme } from 'react-native-paper'
 import { createStackNavigator } from '@react-navigation/stack'
 
 import { ModalProvider } from './context'
@@ -15,6 +15,7 @@ import FinalStep from './FinalStep'
 const Stack = createStackNavigator()
 
 function SubmissionModal({ navigation }) {
+  const theme = useTheme()
   return (
     <Modal
       contentContainerStyle={{
@@ -31,7 +32,11 @@ function SubmissionModal({ navigation }) {
       onDismiss={() => navigation.navigate('Main')}
     >
       <ModalProvider>
-        <Stack.Navigator>
+        <Stack.Navigator
+          screenOptions={{
+            headerTintColor: theme.colors.text
+          }}
+        >
           <Stack.Screen
             name="SubmissionModalStep1"
             component={AuthStep}
