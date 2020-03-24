@@ -1,6 +1,7 @@
 // @generated: @expo/next-adapter@2.0.14
 import 'react-native-gesture-handler'
 import React from 'react'
+import { enableScreens } from 'react-native-screens'
 import { Platform } from 'react-native'
 import Head from 'next/head'
 import {
@@ -20,6 +21,8 @@ import SubmissionModal from '../components/SubmissionModal'
 
 // Main is our main app screen
 import Main from '../components/Main'
+
+enableScreens()
 
 const MainStack = createStackNavigator()
 const RootStack = createStackNavigator()

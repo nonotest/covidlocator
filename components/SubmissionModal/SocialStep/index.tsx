@@ -28,7 +28,7 @@ function SocialStep({ navigation }) {
             type: modalActions.SET_SOCIAL,
             payload: { social: { twitter, facebook } }
           })
-          navigation.navigate('SubmissionModalStep4')
+          navigation.navigate('SubmissionModalFinalStep')
         }}
       >
         <Text>Continue</Text>

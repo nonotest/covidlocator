@@ -9,6 +9,8 @@ import { ModalProvider } from './context'
 import SeverityStep from './SeverityStep/index'
 import SocialStep from './SocialStep/index'
 import AuthStep from './AuthStep/index'
+import LocationStep from './LocationStep/index'
+import FinalStep from './FinalStep'
 
 const Stack = createStackNavigator()
 
@@ -42,8 +44,18 @@ function SubmissionModal({ navigation }) {
           />
           <Stack.Screen
             name="SubmissionModalStep3"
+            component={LocationStep}
+            options={{ title: 'Step 3 - My Location' }}
+          />
+          <Stack.Screen
+            name="SubmissionModalStep4"
             component={SocialStep}
-            options={{ title: 'Step 3 - My Network' }}
+            options={{ title: 'Step 4 - My Network' }}
+          />
+          <Stack.Screen
+            name="SubmissionModalFinalStep"
+            component={FinalStep}
+            options={{ title: 'Summary' }}
           />
         </Stack.Navigator>
       </ModalProvider>
