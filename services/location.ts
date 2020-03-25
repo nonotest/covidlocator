@@ -23,3 +23,31 @@ export const getLocationAsync = async () => {
   let location = await Location.getCurrentPositionAsync({})
   return { location, locPermission: true }
 }
+
+export const generateClusters = coords => {
+  let clusters = []
+  const severities = ['severe', 'mild', 'critical']
+
+  const count = Math.floor(Math.random() * 5) + 3
+  for (let i = 0; i < count; ++i) {
+    const modifier = Math.floor(Math.random() * 6) * 0.001 + 0.001
+    const severity = Math.floor(Math.random() * Math.floor(3))
+    clusters.push({
+      uuid: `uuid-${i}`,
+      center: {
+        coordinate: {
+          latitude: coords.latitude + modifier,
+          longitude: coords.longitude - modifier
+        }
+      },
+      population: 10,
+      created_at: new Date(),
+      symptoms_severity: severities[severity],
+      symptoms_started_at: new Date()
+    })
+  }
+
+  return {
+    data: clusters
+  }
+}

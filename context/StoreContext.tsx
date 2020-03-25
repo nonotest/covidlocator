@@ -19,7 +19,7 @@ function getInitialStore(): StoreProviderState {
   return {
     location: null,
     markers,
-    clusters,
+    clusters: { data: [] },
     authed: false,
     locPermission: false,
     submitted: false

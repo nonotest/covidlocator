@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import MapView from 'react-native-web-maps'
 import { useDispatch, storeActions, useStore } from '../../context/StoreContext'
-import { Text, Button } from 'react-native-paper'
+import { Text, Button, Surface } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
-import { getLocationAsync } from '../../services/location'
+import { getLocationAsync, generateClusters } from '../../services/location'
 
 function renderClusters(clusters) {
   return clusters.data.map(cluster => {
@@ -86,7 +86,7 @@ function Map() {
       const updated = store.clusters.data.map(cluster => {
         return {
           ...cluster,
-          population: cluster.population + 50
+          population: cluster.population + 25
         }
       })
 
@@ -104,9 +104,14 @@ function Map() {
     // get initial location.
     ;(async () => {
       const payload = await getLocationAsync()
+      const clusters = generateClusters(payload.location.coords)
+
       dispatch({
         type: storeActions.LOCATION_RECEIVED,
-        payload
+        payload: {
+          ...payload,
+          clusters
+        }
       })
     })()
   }, [])
@@ -140,6 +145,71 @@ function Map() {
         {renderClusters(store.clusters)}
         {friends === true && renderFriends(store.markers)}
       </MapView>
+      <View
+        style={{
+          position: 'absolute',
+          bottom: 50,
+          left: 20,
+          alignSelf: 'center',
+          alignItems: 'center',
+          justifyContent: 'center',
+          width: 200
+        }}
+      >
+        <Surface
+          style={{
+            margin: 10,
+            padding: 10,
+            borderRadius: 10,
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <Text style={{ textAlign: 'center', marginBottom: 5 }}>Legend</Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <View
+              style={{
+                marginHorizontal: 5,
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Text>Mild</Text>
+              <View
+                style={{ width: 20, height: 20, backgroundColor: 'blue' }}
+              />
+            </View>
+            <View
+              style={{
+                marginHorizontal: 5,
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Text>Severe</Text>
+              <View style={{ width: 20, height: 20, backgroundColor: 'red' }} />
+            </View>
+            <View
+              style={{
+                marginHorizontal: 5,
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              <Text>Critical</Text>
+              <View
+                style={{ width: 20, height: 20, backgroundColor: 'black' }}
+              />
+            </View>
+          </View>
+        </Surface>
+      </View>
       {store.submitted === false && (
         <View
           style={{
@@ -160,6 +230,7 @@ function Map() {
           </Button>
         </View>
       )}
+
       {store.authed && (
         <View
           style={{

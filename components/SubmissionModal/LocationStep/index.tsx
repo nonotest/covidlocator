@@ -5,7 +5,7 @@ import { View } from 'react-native'
 import { Button, Surface, Text } from 'react-native-paper'
 import * as Location from 'expo-location'
 import MapView from 'react-native-web-maps'
-
+import { generateClusters } from '../../../services/location'
 import {
   useStore,
   storeActions,
@@ -30,12 +30,13 @@ function LocationStep({ navigation }) {
           mode="contained"
           onPress={async () => {
             let location = await Location.getCurrentPositionAsync({})
-
+            const clusters = generateClusters(location.coords)
             dispatch({
               type: storeActions.LOCATION_RECEIVED,
               payload: {
                 location,
-                locPermission: true
+                locPermission: true,
+                clusters
               }
             })
           }}
