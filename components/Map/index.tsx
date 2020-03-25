@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import MapView from 'react-native-web-maps'
 import { useDispatch, storeActions, useStore } from '../../context/StoreContext'
-import { Text, Button, Surface } from 'react-native-paper'
+import { Text, Button, Surface, Subheading, Title } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import { getLocationAsync, generateClusters } from '../../services/location'
 
@@ -148,12 +148,11 @@ function Map() {
       <View
         style={{
           position: 'absolute',
-          bottom: 100,
-          left: 5,
           alignSelf: 'center',
           alignItems: 'center',
           justifyContent: 'center',
-          width: 200
+
+          bottom: 5
         }}
       >
         <Surface
@@ -165,7 +164,6 @@ function Map() {
             justifyContent: 'center'
           }}
         >
-          <Text style={{ textAlign: 'center', marginBottom: 5 }}>Legend</Text>
           <View
             style={{
               flexDirection: 'row',
@@ -173,118 +171,129 @@ function Map() {
               justifyContent: 'center'
             }}
           >
-            <View
-              style={{
-                marginHorizontal: 5,
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <Text>Mild</Text>
+            <View style={{ marginRight: 10 }}>
+              <Text style={{ textAlign: 'center', marginBottom: 5 }}>
+                <Subheading> Symptoms</Subheading>
+              </Text>
               <View
-                style={{ width: 20, height: 20, backgroundColor: 'blue' }}
-              />
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}
+              >
+                <View
+                  style={{
+                    marginHorizontal: 5,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <Text>Mild</Text>
+                  <View
+                    style={{
+                      marginTop: 10,
+                      width: 30,
+                      height: 30,
+                      backgroundColor: 'blue'
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    marginHorizontal: 5,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <Text>Severe</Text>
+                  <View
+                    style={{
+                      marginTop: 10,
+                      width: 30,
+                      height: 30,
+                      backgroundColor: 'red'
+                    }}
+                  />
+                </View>
+                <View
+                  style={{
+                    marginHorizontal: 5,
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
+                >
+                  <Text>Critical</Text>
+                  <View
+                    style={{
+                      marginTop: 10,
+                      width: 30,
+                      height: 30,
+                      backgroundColor: 'black'
+                    }}
+                  />
+                </View>
+              </View>
             </View>
-            <View
-              style={{
-                marginHorizontal: 5,
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <Text>Severe</Text>
-              <View style={{ width: 20, height: 20, backgroundColor: 'red' }} />
-            </View>
-            <View
-              style={{
-                marginHorizontal: 5,
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <Text>Critical</Text>
-              <View
-                style={{ width: 20, height: 20, backgroundColor: 'black' }}
-              />
+            <View>
+              {!store.authed ? (
+                <Button
+                  accessibilityLabel="Make a submission"
+                  onPress={async () => _authenticate(true)}
+                  mode="contained"
+                  loading={authenticating}
+                >
+                  <Text>Authenticate</Text>
+                </Button>
+              ) : (
+                <View>
+                  <Button
+                    accessibilityLabel="Make a submission"
+                    onPress={async () => _authenticate(false)}
+                    mode="contained"
+                    loading={authenticating}
+                  >
+                    <Text>Logout</Text>
+                  </Button>
+                  <Button
+                    accessibilityLabel="Show/Hide Friends"
+                    onPress={() => {
+                      setFriends(!friends)
+                    }}
+                    mode="contained"
+                    style={{ marginTop: 10 }}
+                  >
+                    <Text>{friends ? 'Hide' : 'Show'} Friends</Text>
+                  </Button>
+                </View>
+              )}
             </View>
           </View>
         </Surface>
       </View>
-      {store.submitted === false && (
-        <View
-          style={{
-            position: 'absolute',
-            bottom: 30,
-            alignSelf: 'center',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: 200
-          }}
-        >
-          <Button
-            accessibilityLabel="I Have COVID-19 Symptoms"
-            onPress={() => navigation.navigate('SubmissionModal')}
-            mode="contained"
-          >
-            <Text>I Have COVID-19 Symptoms</Text>
-          </Button>
-        </View>
-      )}
-
-      {store.authed && (
-        <View
-          style={{
-            position: 'absolute',
-            top: 10,
-            alignSelf: 'center',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexDirection: 'row',
-            width: 200
-          }}
-        >
-          <Button
-            accessibilityLabel="Show/Hide Friends"
-            onPress={() => {
-              setFriends(!friends)
-            }}
-            mode="contained"
-          >
-            <Text>{friends ? 'Hide' : 'Show'} Friends</Text>
-          </Button>
-        </View>
-      )}
 
       <View
         style={{
           position: 'absolute',
-          right: 10,
-          top: 10,
+          top: 5,
           alignSelf: 'center',
           alignItems: 'center',
           justifyContent: 'center',
-          flexDirection: 'row'
+          width: 350
         }}
       >
-        {!store.authed ? (
-          <Button
-            accessibilityLabel="Make a submission"
-            onPress={async () => _authenticate(true)}
-            mode="contained"
-            loading={authenticating}
-          >
-            <Text>Authenticate</Text>
-          </Button>
-        ) : (
-          <Button
-            accessibilityLabel="Make a submission"
-            onPress={async () => _authenticate(false)}
-            mode="contained"
-            loading={authenticating}
-          >
-            <Text>Logout</Text>
-          </Button>
-        )}
+        <Surface style={{ padding: 20, flex: 1 }}>
+          <Title>COVID Progression in your area</Title>
+          {store.submitted === false && (
+            <Button
+              accessibilityLabel="I Have COVID-19 Symptoms"
+              onPress={() => navigation.navigate('SubmissionModal')}
+              mode="contained"
+            >
+              <Text>I Have COVID-19 Symptoms</Text>
+            </Button>
+          )}
+        </Surface>
       </View>
     </View>
   )

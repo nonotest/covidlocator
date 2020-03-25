@@ -30,7 +30,7 @@ export const generateClusters = coords => {
 
   const count = Math.floor(Math.random() * 5) + 3
   for (let i = 0; i < count; ++i) {
-    const modifier = Math.floor(Math.random() * 6) * 0.001 + 0.001
+    const modifier = Math.floor(Math.random() * 6) * 0.002 + 0.002
     const severity = Math.floor(Math.random() * Math.floor(3))
     clusters.push({
       uuid: `uuid-${i}`,
