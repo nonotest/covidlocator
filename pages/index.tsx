@@ -4,6 +4,8 @@ import React from 'react'
 import { enableScreens } from 'react-native-screens'
 import { Platform } from 'react-native'
 import Head from 'next/head'
+import getConfig from 'next/config'
+
 import {
   Provider as PaperProvider,
   DarkTheme as PaperDarkTheme,
@@ -43,6 +45,14 @@ const CombinedDarkTheme = { ...PaperDarkTheme, ...NavigationDarkTheme }
 // const CombinedLightTheme = { ...PaperLightTheme, ...NavigationLightTheme }
 
 export default function App() {
+  let gmap
+  if (process.env.NODE_ENV !== 'production') {
+    const { publicRuntimeConfig } = getConfig()
+    const { GOOGLE_MAP_API_KEY } = publicRuntimeConfig
+    gmap = GOOGLE_MAP_API_KEY
+  } else {
+    gmap = process.env.GOOGLE_MAP_API_KEY
+  }
   return (
     <StoreProvider>
       <PaperProvider theme={PaperDarkTheme}>
@@ -52,7 +62,7 @@ export default function App() {
               <Head>
                 <script
                   key={new Date().toLocaleTimeString()}
-                  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9oamWEM6EVkEEi0L45R58kBfVlYLQnPE"
+                  src={`https://maps.googleapis.com/maps/api/js?key=${gmap}`}
                 ></script>
               </Head>
             </>

@@ -1,6 +1,5 @@
 import React, { Dispatch, createContext, useContext, useEffect } from 'react'
 import * as Location from 'expo-location'
-import { clusters } from '../mock/clusters'
 import { markers } from '../mock/markers'
 
 export interface StoreProviderProps {
@@ -74,7 +73,10 @@ export const storeActions = {
   UPDATE_CLUSTERS_AUTO: 'UPDATE_CLUSTERS_AUTO'
 }
 
-function storeReducer(state: StoreProviderState, action): StoreProviderState {
+function storeReducer(
+  state: StoreProviderState,
+  action: Actions
+): StoreProviderState {
   switch (action.type) {
     case storeActions.LOCATION_RECEIVED:
       return {

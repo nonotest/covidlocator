@@ -5,24 +5,24 @@ const { withExpo } = require('@expo/next-adapter')
 const withImages = require('next-images')
 const withFonts = require('next-fonts')
 const withTM = require('next-transpile-modules')
+require('dotenv').config()
 
 module.exports = withExpo(
   withFonts(
-    withImages(
-      withTM({
-        transpileModules: ['reanimated-bottom-sheet'],
-        projectRoot: __dirname,
-
-        webpack: (config, { defaultLoaders }) => {
-          config.resolve.alias = {
-            ...(config.resolve.alias || {}),
-            'react-native-maps$': 'react-native-web-maps'
-          }
-
-          return config
+    withImages({
+      projectRoot: __dirname,
+      webpack: (config, { defaultLoaders }) => {
+        config.resolve.alias = {
+          ...(config.resolve.alias || {}),
+          'react-native-maps$': 'react-native-web-maps'
         }
-      })
-    )
+
+        return config
+      },
+      publicRuntimeConfig: {
+        GOOGLE_MAP_API_KEY: process.env.GOOGLE_MAP_API_KEY
+      }
+    })
   )
 )
 
