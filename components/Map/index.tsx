@@ -148,8 +148,8 @@ function Map() {
       <View
         style={{
           position: 'absolute',
-          bottom: 50,
-          left: 20,
+          bottom: 75,
+          left: 10,
           alignSelf: 'center',
           alignItems: 'center',
           justifyContent: 'center',
