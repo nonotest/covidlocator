@@ -35,3 +35,4 @@ web-report/
 .pnp.js
 # @end @expo/next-adapter
 .env.build
+.env
