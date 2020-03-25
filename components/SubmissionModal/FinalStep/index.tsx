@@ -3,8 +3,10 @@
 import React from 'react'
 import { View } from 'react-native'
 import { Button, Surface, Text } from 'react-native-paper'
-
+import { useDispatch, storeActions } from '../../../context/StoreContext'
 function FinalStep({ navigation }) {
+  const dispatch = useDispatch()
+
   return (
     <View style={{ padding: 10, flex: 1 }}>
       <View style={{ flex: 1 }}>
@@ -15,7 +17,10 @@ function FinalStep({ navigation }) {
       <Button
         mode="contained"
         onPress={() => {
-          alert('submit...')
+          dispatch({
+            type: storeActions.SET_SUBMITTED,
+            payload: { authed: true }
+          })
           navigation.navigate('Main')
         }}
       >

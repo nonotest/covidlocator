@@ -50,7 +50,10 @@ export default function App() {
           {Platform.OS === 'web' && (
             <>
               <Head>
-                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9oamWEM6EVkEEi0L45R58kBfVlYLQnPE"></script>
+                <script
+                  key={new Date().toLocaleTimeString()}
+                  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC9oamWEM6EVkEEi0L45R58kBfVlYLQnPE"
+                ></script>
               </Head>
             </>
           )}

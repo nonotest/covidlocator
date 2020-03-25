@@ -11,6 +11,8 @@ export interface StoreProviderState {
   markers: { data: Array<Object> }
   clusters: { data: Array<Object> }
   authed: boolean
+  locPermission: boolean
+  submitted: boolean
 }
 
 function getInitialStore(): StoreProviderState {
@@ -18,7 +20,9 @@ function getInitialStore(): StoreProviderState {
     location: null,
     markers,
     clusters,
-    authed: false
+    authed: false,
+    locPermission: false,
+    submitted: false
   }
 }
 
@@ -65,7 +69,9 @@ interface Actions {
 
 export const storeActions = {
   LOCATION_RECEIVED: 'LOCATION_RECEIVED',
-  SET_AUTHENTICATION: 'SET_AUTHENTICATION'
+  SET_AUTHENTICATION: 'SET_AUTHENTICATION',
+  SET_SUBMITTED: 'SET_SUBMITTED',
+  UPDATE_CLUSTERS_AUTO: 'UPDATE_CLUSTERS_AUTO'
 }
 
 function storeReducer(state: StoreProviderState, action): StoreProviderState {
@@ -73,12 +79,22 @@ function storeReducer(state: StoreProviderState, action): StoreProviderState {
     case storeActions.LOCATION_RECEIVED:
       return {
         ...state,
-        location: action.payload.location
+        ...action.payload
       }
     case storeActions.SET_AUTHENTICATION:
       return {
         ...state,
         authed: action.payload.authed
+      }
+    case storeActions.SET_SUBMITTED:
+      return {
+        ...state,
+        submitted: action.payload.submitted
+      }
+    case storeActions.UPDATE_CLUSTERS_AUTO:
+      return {
+        ...state,
+        clusters: { data: action.payload.clusters }
       }
     default:
       return state

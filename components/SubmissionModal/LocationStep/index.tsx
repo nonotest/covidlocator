@@ -3,31 +3,83 @@
 import React from 'react'
 import { View } from 'react-native'
 import { Button, Surface, Text } from 'react-native-paper'
-import { useStore } from '../../../context/StoreContext'
+import * as Location from 'expo-location'
+import MapView from 'react-native-web-maps'
+
+import {
+  useStore,
+  storeActions,
+  useDispatch
+} from '../../../context/StoreContext'
 
 function LocationStep({ navigation }) {
   const store = useStore()
+  const dispatch = useDispatch()
+
+  let content
+  if (store.locPermission === false) {
+    content = (
+      <View>
+        <Text>
+          You have initially blocked access to your location. We need your
+          permission to access your location and share your status. Unblock us
+          in your permission settings and click Share. Example on chrome,
+          navigate to chrome://settings/content/location
+        </Text>
+        <Button
+          mode="contained"
+          onPress={async () => {
+            let location = await Location.getCurrentPositionAsync({})
+
+            dispatch({
+              type: storeActions.LOCATION_RECEIVED,
+              payload: {
+                location,
+                locPermission: true
+              }
+            })
+          }}
+        >
+          <Text>Share</Text>
+        </Button>
+      </View>
+    )
+  } else {
+    content = (
+      <View
+        style={{
+          width: 340,
+          height: 200,
+          justifyContent: 'center'
+        }}
+      >
+        <MapView
+          defaultZoom={13}
+          region={store.location.coords}
+          options={{
+            mapTypeControl: false,
+            streetViewControl: false,
+            zoomControl: false,
+            fullscreenControl: false
+          }}
+        />
+      </View>
+    )
+  }
+
   return (
     <View style={{ padding: 10, flex: 1 }}>
       <View style={{ flex: 1 }}>
-        <Surface style={{ padding: 10 }}>
-          {store.location ? (
-            <View style={{ paddingVertical: 5 }}>
-              <Text>lat: {store.location.coords.latitude}</Text>
-              <Text>long: {store.location.coords.longitude}</Text>
-            </View>
-          ) : (
-            <Text>Button to allow location</Text>
-          )}
-        </Surface>
+        <Surface style={{ padding: 10 }}>{content}</Surface>
       </View>
       <Button
         mode="contained"
         onPress={() => {
           navigation.navigate('SubmissionModalStep4')
         }}
+        disabled={store.locPermission === false}
       >
-        <Text>Continute</Text>
+        <Text>Continue</Text>
       </Button>
     </View>
   )

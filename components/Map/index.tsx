@@ -4,11 +4,9 @@ import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import MapView from 'react-native-web-maps'
 import { useDispatch, storeActions, useStore } from '../../context/StoreContext'
-import * as Location from 'expo-location'
-import * as Permissions from 'expo-permissions'
 import { Text, Button } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
-import { clusters } from '../../mock/clusters'
+import { getLocationAsync } from '../../services/location'
 
 function renderClusters(clusters) {
   return clusters.data.map(cluster => {
@@ -73,37 +71,6 @@ function Map() {
   const [friends, setFriends] = useState(false)
   const [authenticating, setAuthenticating] = useState(false)
 
-  const _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION)
-    if (status !== 'granted') {
-      const loc: Location.LocationData = {
-        // default
-        coords: {
-          latitude: -33.8,
-          longitude: 151,
-          altitude: 0,
-          accuracy: 100,
-          speed: 0,
-          heading: 0
-        },
-        timestamp: new Date().getTime()
-      }
-
-      dispatch({
-        type: storeActions.LOCATION_RECEIVED,
-        payload: { location: loc }
-      })
-      return
-    }
-
-    let location = await Location.getCurrentPositionAsync({})
-    dispatch({
-      type: storeActions.LOCATION_RECEIVED,
-      payload: { location }
-    })
-    return
-  }
-
   const _authenticate = async val => {
     setAuthenticating(true)
     await timeout(1000)
@@ -115,8 +82,33 @@ function Map() {
   }
 
   useEffect(() => {
+    const it = setInterval(() => {
+      const updated = store.clusters.data.map(cluster => {
+        return {
+          ...cluster,
+          population: cluster.population + 50
+        }
+      })
+
+      dispatch({
+        type: storeActions.UPDATE_CLUSTERS_AUTO,
+        payload: { clusters: updated }
+      })
+    }, 4000)
+    return () => {
+      clearInterval(it)
+    }
+  }, [store.clusters])
+
+  useEffect(() => {
     // get initial location.
-    _getLocationAsync()
+    ;(async () => {
+      const payload = await getLocationAsync()
+      dispatch({
+        type: storeActions.LOCATION_RECEIVED,
+        payload
+      })
+    })()
   }, [])
 
   if (!store.location) {
@@ -145,27 +137,29 @@ function Map() {
           fullscreenControl: false
         }}
       >
-        {renderClusters(clusters)}
+        {renderClusters(store.clusters)}
         {friends === true && renderFriends(store.markers)}
       </MapView>
-      <View
-        style={{
-          position: 'absolute',
-          bottom: 50,
-          alignSelf: 'center',
-          alignItems: 'center',
-          justifyContent: 'center',
-          width: 200
-        }}
-      >
-        <Button
-          accessibilityLabel="Make a submission"
-          onPress={() => navigation.navigate('SubmissionModal')}
-          mode="contained"
+      {store.submitted === false && (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 50,
+            alignSelf: 'center',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: 200
+          }}
         >
-          <Text>Make a submission</Text>
-        </Button>
-      </View>
+          <Button
+            accessibilityLabel="I Have COVID-19 Symptoms"
+            onPress={() => navigation.navigate('SubmissionModal')}
+            mode="contained"
+          >
+            <Text>I Have COVID-19 Symptoms</Text>
+          </Button>
+        </View>
+      )}
       {store.authed && (
         <View
           style={{

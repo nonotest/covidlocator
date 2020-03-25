@@ -5,7 +5,7 @@ import { Modal, useTheme } from 'react-native-paper'
 import { createStackNavigator } from '@react-navigation/stack'
 
 import { ModalProvider } from './context'
-
+import { useStore } from '../../context/StoreContext'
 import SeverityStep from './SeverityStep/index'
 import SocialStep from './SocialStep/index'
 import AuthStep from './AuthStep/index'
@@ -16,6 +16,8 @@ const Stack = createStackNavigator()
 
 function SubmissionModal({ navigation }) {
   const theme = useTheme()
+  const store = useStore()
+
   return (
     <Modal
       contentContainerStyle={{
@@ -37,11 +39,13 @@ function SubmissionModal({ navigation }) {
             headerTintColor: theme.colors.text
           }}
         >
-          <Stack.Screen
-            name="SubmissionModalStep1"
-            component={AuthStep}
-            options={{ title: 'Step 1 - Authentication' }}
-          />
+          {store.authed === false && (
+            <Stack.Screen
+              name="SubmissionModalStep1"
+              component={AuthStep}
+              options={{ title: 'Step 1 - Authentication' }}
+            />
+          )}
           <Stack.Screen
             name="SubmissionModalStep2"
             component={SeverityStep}

@@ -25,3 +25,7 @@ module.exports = withExpo(
     )
   )
 )
+
+/**    'react-native-maps$': 'react-native-web-maps',
+            'react-native-web/dist/exports/ColorPropType':
+              'react-native-web/dist/index.js' */
