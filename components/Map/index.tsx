@@ -148,8 +148,8 @@ function Map() {
       <View
         style={{
           position: 'absolute',
-          bottom: 75,
-          left: 10,
+          bottom: 100,
+          left: 5,
           alignSelf: 'center',
           alignItems: 'center',
           justifyContent: 'center',
@@ -158,7 +158,7 @@ function Map() {
       >
         <Surface
           style={{
-            margin: 10,
+            margin: 5,
             padding: 10,
             borderRadius: 10,
             alignItems: 'center',
@@ -214,7 +214,7 @@ function Map() {
         <View
           style={{
             position: 'absolute',
-            bottom: 50,
+            bottom: 30,
             alignSelf: 'center',
             alignItems: 'center',
             justifyContent: 'center',
