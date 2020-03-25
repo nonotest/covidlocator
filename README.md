@@ -23,4 +23,4 @@ in your network has submitted symptoms
 - react-native
 - react-native-web
 - react-navigation
-- now.sh
+- now.sh (+secrets)
