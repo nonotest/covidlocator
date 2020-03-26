@@ -4,7 +4,7 @@
 const { withExpo } = require('@expo/next-adapter')
 const withImages = require('next-images')
 const withFonts = require('next-fonts')
-const withTM = require('next-transpile-modules')
+// const withTM = require('next-transpile-modules')
 require('dotenv').config()
 
 module.exports = withExpo(
@@ -22,13 +22,10 @@ module.exports = withExpo(
       publicRuntimeConfig: {
         GOOGLE_MAP_API_KEY: process.env.GOOGLE_MAP_API_KEY
       },
+      // this worked!
       env: {
         GOOGLE_MAP_API_KEY: process.env.GOOGLE_MAP_API_KEY
       }
     })
   )
 )
-
-/**    'react-native-maps$': 'react-native-web-maps',
-            'react-native-web/dist/exports/ColorPropType':
-              'react-native-web/dist/index.js' */
