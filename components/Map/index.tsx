@@ -1,12 +1,12 @@
 //@ts-nocheck
 
 import React, { useEffect, useState } from 'react'
-import { View } from 'react-native'
-import MapView from 'react-native-web-maps'
+import { StyleSheet, View } from 'react-native'
 import { useDispatch, storeActions, useStore } from '../../context/StoreContext'
 import { Text, Button, Surface, Subheading, Title } from 'react-native-paper'
 import { useNavigation } from '@react-navigation/native'
 import { getLocationAsync, generateClusters } from '../../services/location'
+import MapView, { Circle, Marker } from '../RNMap'
 
 function renderClusters(clusters) {
   return clusters.data.map(cluster => {
@@ -38,7 +38,7 @@ function renderClusters(clusters) {
     }
 
     return (
-      <MapView.Circle
+      <Circle
         radius={Math.sqrt(cluster.population) * 100}
         options={options}
         center={cluster.center.coordinate}
@@ -51,7 +51,7 @@ function renderClusters(clusters) {
 function renderFriends(markers) {
   return markers.data.map(marker => {
     return (
-      <MapView.Marker
+      <Marker
         title={marker.name}
         coordinate={marker.coordinate}
         key={marker.uuid}
@@ -134,7 +134,9 @@ function Map() {
     <View style={{ flex: 1, width: '100%' }}>
       <MapView
         defaultZoom={13}
-        region={store.location.coords}
+        style={{ flex: 1 }}
+        initialRegion={store.location.coords}
+        provider="google"
         options={{
           mapTypeControl: false,
           streetViewControl: false,

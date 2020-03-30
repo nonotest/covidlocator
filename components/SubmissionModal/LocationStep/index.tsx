@@ -4,7 +4,7 @@ import React from 'react'
 import { View } from 'react-native'
 import { Button, Surface, Text } from 'react-native-paper'
 import * as Location from 'expo-location'
-import MapView from 'react-native-web-maps'
+import MapView from '../../RNMap'
 import { generateClusters } from '../../../services/location'
 import {
   useStore,
@@ -57,6 +57,8 @@ function LocationStep({ navigation }) {
         <MapView
           defaultZoom={13}
           region={store.location.coords}
+          style={{ flex: 1 }}
+          provider="google"
           options={{
             mapTypeControl: false,
             streetViewControl: false,
